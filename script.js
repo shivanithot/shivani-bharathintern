@@ -1,66 +1,47 @@
-let menu = document.querySelector(".menu-icon");
-let navbar = document.querySelector(".navbar");
-menu.onclick = () => {
-  navbar.classList.toggle("open-menu");
-  menu.classList.toggle("move");
+const converter = document.querySelector('#converter');
+const result = document.querySelector('.result');
+const convertButton = document.querySelector('.convertButton');
+const resetButton = document.querySelector('.resetButton');
+const changeButton = document.querySelector('.changeButton');
+const C = document.querySelector('.C')
+const F = document.querySelector('.F')
+
+const swap = () => {
+    if (C.innerHTML === '°C') {
+        C.innerHTML = '°F';
+        F.innerHTML = '°C';
+        converter.placeholder = "Temperature in °F";
+    }else {
+        F.innerHTML = '°F';
+        C.innerHTML = '°C';
+        converter.placeholder = "Temperature in °C";
+    };
 };
 
-window.onscroll = () => {
-  navbar.classList.remove("open-menu");
-  menu.classList.remove("move");
-};
+const reset = () => {
+    converter.value = '';
+    result.innerHTML = '';
+}
 
-let header = document.querySelector('header')
-
-window.addEventListener("scroll", () => {
-  header.classList.toggle("header-active", window.scrollY > 0);
-});
-
-let scrollTop = document.querySelector('.scroll-top')
-
-window.addEventListener("scroll", () => {
-  scrollTop.classList.toggle("scroll-active", window.scrollY > 400);
-});
-
-
-function validate() {
-  let name = document.querySelector(".name");
-  let email = document.querySelector(".email");
-  let msg = document.querySelector(".message");
-  let sendBtn = document.querySelector(".send-btn");
-
-  sendBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    if (name.value == "" || email.value == "" || msg.value == "") {
-      emptyerror();
+const convert = () => {
+    if (/^(-?)(\d+)(\.{1}\d+)?$/.test(converter.value)) {
+        result.style.color = "black"
+        if (C.innerHTML === '°C') {
+            let value = (converter.value * 1.8) + 32;
+            result.innerHTML = `${converter.value}°C is equal to ${value.toFixed(2)}°F`;
+        } else {
+            let value = (converter.value - 32) / 1.8;
+            result.innerHTML = `${converter.value}°F is equal to ${value.toFixed(2)}°C`;
+        }
+    } else if (converter.value == '') {
+        result.style.color = "#993300"
+        result.innerHTML = 'Hey there..Enter some number';
     } else {
-      sendmail(name.value, email.value, msg.value);
-      success();
+        result.style.color = "#993300"
+        result.innerHTML = 'Enter only numbers!!!';
     }
-  });
-}
-validate();
-
-function sendmail(name, email, msg) {
-  emailjs.send("service_8ve0kgq","template_6gdgoid",{
-    from_name: email,
-    to_name: name,
-    message: msg,
-    });
 }
 
-function emptyerror() {
-  swal({
-    title: "Oh no.....!",
-    text: "Fields cannot be empty!",
-    icon: "error",
-  });
-}
-
-function success() {
-  swal({
-    title: "Email sent successfully",
-    text: "Will try to reply in 24 hours",
-    icon: "success",
-  });
-}
+changeButton.addEventListener('click', swap);
+resetButton.addEventListener('click', reset);
+convertButton.addEventListener('click', convert);
